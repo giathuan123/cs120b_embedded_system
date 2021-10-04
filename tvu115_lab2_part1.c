@@ -14,7 +14,7 @@
 
 int main(void) {
     while(1){
-      PORTB = (~(PINA & 0x02)) && (PINA & 0x01);
+      PORTB = ((PINA & 0x02) != 0x02) && (PINA & 0x01);
     }
     return 1;
 }
