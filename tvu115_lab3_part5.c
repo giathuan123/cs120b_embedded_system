@@ -24,8 +24,8 @@ int main(void) {
     DDRB = 0x06; // 0110
     while (1) {
       unsigned int weight = ((unsigned int) PIND << 1) + GetBit(PINB, 0);
-      PORTB = SetBit(PINB, 1, (weight >= 70));
-      PORTB = SetBit(PINB, 2, (weight < 70 && weight > 5));
+      PORTB = SetBit(PORTB, 1, (weight >= 70));
+      PORTB = SetBit(PORTB, 2, (weight < 70 && weight > 5));
     }
     return 1;
 }
