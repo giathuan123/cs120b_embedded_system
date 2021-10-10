@@ -18,7 +18,7 @@ unsigned char getBit(unsigned char p, unsigned char idx){
 unsigned char countPort(unsigned char port, unsigned char portSize){
   unsigned char cnt = 0;
   int i;
-  for(i = 0; i < portSize-1; ++i)
+  for(i = 0; i < portSize; ++i)
     cnt += getBit(port, i);
   return cnt;
 }
