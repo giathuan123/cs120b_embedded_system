@@ -34,28 +34,27 @@ continue 5
 expect state key_press
 setPINA 0x00
 continue 5
-expect state key_release
+expect state lock
 
 setPINA 0x01
 continue 5
 expect state key_press
 setPINA 0x00
 continue 5
-expect state key_release
+expect state lock
 
 setPINA 0x02
 continue 5
 expect state key_press
 setPINA 0x00
 continue 5
-expect state key_release
+expect state lock
 
 setPINA 0x01
 continue 5
 expect state key_press
 setPINA 0x00
 continue 5
-expect state key_release
 
 # Check pass/fail
 expect state unlock
