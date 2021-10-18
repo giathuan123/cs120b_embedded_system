@@ -33,6 +33,7 @@ enum ButtonStates GetButtonState(enum ButtonStates buttonState,unsigned char bit
         buttonState = released;
       }
   }
+  return buttonState;
 }
 void increment(){
   cnt = (cnt < 9) ? cnt + 1 : cnt;
