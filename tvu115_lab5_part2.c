@@ -23,12 +23,12 @@ unsigned char cnt = 0;
 void GetButtonState(enum ButtonStates *buttonState,unsigned char bit, void (*action)()){
   switch(*buttonState){
     case(released):
-      if(bit == 0){
+      if(bit){
         action();
         *buttonState = pressed;
       }
     case(pressed):
-      if(bit == 0x01){
+      if(bit == 0x00){
         *buttonState = released;
       }
   }
@@ -41,8 +41,10 @@ void decrement(){
 }
 
 void tick(){
-  GetButtonState(&buttonA0, GetBit(PORTA, 0), increment);
-  GetButtonState(&buttonA1, GetBit(PORTA, 1), decrement);
+  unsigned char bit1 = ~PINA & 0x01;
+  unsigned char bit2 = ~PINA & 0x02;
+  GetButtonState(&buttonA0,bit1 , increment);
+  GetButtonState(&buttonA1, bit2, decrement);
   switch(state){
     case(startState):
       state = init;
