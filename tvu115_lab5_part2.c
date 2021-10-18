@@ -42,8 +42,8 @@ void decrement(){
 }
 
 void tick(){
-  buttonA0 = GetButtonState(buttonA0,GetBit(PORTA, 0), increment);
-  buttonA1 = GetButtonState(buttonA1, GetBit(PORTA, 1), decrement);
+  buttonA0 = GetButtonState(buttonA0,GetBit(PINA, 0), increment);
+  buttonA1 = GetButtonState(buttonA1, GetBit(PINA, 1), decrement);
   switch(state){
     case(startState):
       state = init;
