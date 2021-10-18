@@ -5,6 +5,10 @@
  *	Exercise Description: [optional - include for your own benefit] I acknowledge all content contained herein, excluding template or example
  *	code, is my own original work.
  */
+#include <avr/io.h>
+#ifdef SIMULATE
+#include "simAVRHeader.h"
+#endif
 int main(void) {
     DDRA = 0x00;
     DDRC = 0xFF;
