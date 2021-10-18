@@ -30,8 +30,7 @@ int main(void) {
       }else if(uc_fuel_lvl <= 15){
         output = 0x3F;
       }
-      PORTC = output
+      PORTC = output;
     }
     return 1;
 }
- */
