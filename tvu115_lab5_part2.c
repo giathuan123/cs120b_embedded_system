@@ -43,7 +43,7 @@ void decrement(){
 void tick(){
   unsigned char bit1 = ~PINA & 0x01;
   unsigned char bit2 = ~PINA & 0x02;
-  GetButtonState(&buttonA0,bit1 , increment);
+  GetButtonState(&buttonA0, bit1, increment);
   GetButtonState(&buttonA1, bit2, decrement);
   switch(state){
     case(startState):
@@ -64,7 +64,7 @@ void tick(){
   }
   switch(state){
     case(init):
-      cnt = 7;
+      cnt = 8;
       break;
     case(reset):
       cnt = 0;
