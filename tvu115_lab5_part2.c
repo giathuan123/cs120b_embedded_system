@@ -2,8 +2,7 @@
  *  Partner(s) Name: 
  *	Lab Section:
  *	Assignment: Lab4  Exercise 2
- *	Exercise Description: [optional - include for your own benefit]
- * I acknowledge all content contained herein, excluding template or example
+ *	Exercise Description: [optional - include for your own benefit] I acknowledge all content contained herein, excluding template or example
  *	code, is my own original work.
  */
 #include <avr/io.h>
@@ -24,12 +23,12 @@ unsigned char cnt = 0;
 void GetButtonState(enum ButtonStates *buttonState,unsigned char bit, void (*action)()){
   switch(*buttonState){
     case(released):
-      if(bit){
+      if(bit == 0){
         action();
         *buttonState = pressed;
       }
     case(pressed):
-      if(bit == 0x00){
+      if(bit == 0x01){
         *buttonState = released;
       }
   }
@@ -42,8 +41,8 @@ void decrement(){
 }
 
 void tick(){
-  GetButtonState(&buttonA0,GetBit(PINA, 0), increment);
-  GetButtonState(&buttonA1, GetBit(PINA, 1), decrement);
+  GetButtonState(&buttonA0, GetBit(PORTA, 0), increment);
+  GetButtonState(&buttonA1, GetBit(PORTA, 1), decrement);
   switch(state){
     case(startState):
       state = init;
@@ -72,6 +71,8 @@ void tick(){
 int main(void) {
     DDRC = 0xFF;
     PORTC = 0x07;
+    DDRA =0x00;
+    PORTA = 0xFF;
     /* Insert your solution below */
     buttonA0 = released;
     buttonA1 = released;
