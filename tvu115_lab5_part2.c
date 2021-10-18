@@ -76,6 +76,7 @@ int main(void) {
     buttonA0 = released;
     buttonA1 = released;
     while (1) {
+      PORTB = (PORTB &0xfc) +  (GetBit(PINA, 1) << 1) + (GetBit(PINA, 0))
       tick();
       PORTC = cnt;
     }
