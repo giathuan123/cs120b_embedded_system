@@ -17,57 +17,57 @@ unsigned char SetBit(unsigned char port, unsigned char index, unsigned char bit)
 unsigned char GetBit(unsigned char port, unsigned char index){
   return ((port & (0x01 << index)) != 0x00);
 }
-
-enum States {startState, init, increment, decrement, reset} state;
+enum ButtonStates {released, pressed} buttonA0, buttonA1;
+enum States {startState, init, running, reset} state;
 unsigned char cnt = 0;
 
+enum ButtonStates GetButtonState(enum ButtonStates buttonState,unsigned char bit, void (*action)()){
+  switch(buttonState){
+    case(released):
+      if(bit == 0x01){
+        action();
+        buttonState = pressed;
+      }
+    case(pressed):
+      if(bit == 0x00){
+        buttonState = released;
+      }
+  }
+}
+void increment(){
+  cnt = (cnt < 9) ? cnt + 1 : cnt;
+}
+void decrement(){
+  cnt = (cnt > 0) ? cnt - 1: cnt;
+}
+
 void tick(){
+  buttonA0 = GetButtonState(buttonA0,GetBit(PORTA, 0), increment);
+  buttonA1 = GetButtonState(buttonA1, GetBit(PORTA, 1), decrement);
   switch(state){
     case(startState):
       state = init;
       break;
     case(init):
-      if(GetBit(PINA, 0) && GetBit(PINA, 1)){
-        state = reset;
-      } else if(GetBit(PINA, 0)){
-        state = increment;
-      } else if(GetBit(PINA, 1)){
-        state = decrement;
-      }
+      state = running;
       break;
-    case(increment):
-      if(GetBit(PINA, 0) && GetBit(PINA, 1)){
+    case(running):
+      if(buttonA0 == pressed && buttonA1 == pressed){
         state = reset;
-      }else if(GetBit(PINA, 0) == 0x00){
-        state = init;
-      }
-      break;
-    case(decrement):
-      if(GetBit(PINA, 0) && GetBit(PINA, 1)){
-        state = reset;
-      }else if(GetBit(PINA, 1) == 0x00){
-        state = init;
       }
       break;
     case(reset):
-      state = init;
-      break;
-    default:
-      break;
+      if(buttonA0 == released && buttonA0 == released){
+        state = running;
+      }
   }
   switch(state){
     case(init):
       cnt = 7;
       break;
-    case(increment):
-      cnt = (cnt < 9) ? cnt + 1: cnt;
-      break;
-    case(decrement):
-      cnt = (cnt > 0) ? cnt - 1: cnt;
-      break;
     case(reset):
       cnt = 0;
-  }
+  } 
 }
 int main(void) {
     DDRC = 0xFF;
@@ -75,6 +75,8 @@ int main(void) {
     PORTA = 0x00;
     PORTC = 0x07;
     /* Insert your solution below */
+    buttonA0 = released;
+    buttonA1 = released;
     while (1) {
       tick();
       PORTC = cnt;
