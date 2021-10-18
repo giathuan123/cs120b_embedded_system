@@ -21,19 +21,18 @@ enum ButtonStates {released, pressed} buttonA0, buttonA1;
 enum States {startState, init, running, reset} state;
 unsigned char cnt = 0;
 
-enum ButtonStates GetButtonState(enum ButtonStates buttonState,unsigned char bit, void (*action)()){
-  switch(buttonState){
+void GetButtonState(enum ButtonStates *buttonState,unsigned char bit, void (*action)()){
+  switch(*buttonState){
     case(released):
       if(bit){
         action();
-        buttonState = pressed;
+        *buttonState = pressed;
       }
     case(pressed):
       if(bit == 0x00){
-        buttonState = released;
+        *buttonState = released;
       }
   }
-  return buttonState;
 }
 void increment(){
   cnt = (cnt < 9) ? cnt + 1 : cnt;
@@ -43,8 +42,8 @@ void decrement(){
 }
 
 void tick(){
-  buttonA0 = GetButtonState(buttonA0,GetBit(PINA, 0), increment);
-  buttonA1 = GetButtonState(buttonA1, GetBit(PINA, 1), decrement);
+  GetButtonState(buttonA0,GetBit(PINA, 0), increment);
+  GetButtonState(buttonA1, GetBit(PINA, 1), decrement);
   switch(state){
     case(startState):
       state = init;
