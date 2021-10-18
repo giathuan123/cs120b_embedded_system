@@ -71,8 +71,6 @@ void tick(){
 }
 int main(void) {
     DDRC = 0xFF;
-    DDRA = 0x00;
-    PORTA = 0x00;
     PORTC = 0x07;
     /* Insert your solution below */
     buttonA0 = released;
