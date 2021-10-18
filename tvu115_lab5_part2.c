@@ -24,7 +24,7 @@ unsigned char cnt = 0;
 enum ButtonStates GetButtonState(enum ButtonStates buttonState,unsigned char bit, void (*action)()){
   switch(buttonState){
     case(released):
-      if(bit == 0x01){
+      if(bit){
         action();
         buttonState = pressed;
       }
