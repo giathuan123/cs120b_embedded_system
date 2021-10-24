@@ -2,7 +2,7 @@
  *  Partner(s) Name: 
  *	Lab Section:
  *	Assignment: Lab 6  Exercise 2
- *	Exercise Description: [optional - include for your own benefit]
+ *	Exercise Description:  Synch SM
  *
  *	I acknowledge all content contained herein, excluding template or example code, is my own original work.
  *      Demo Link: 
