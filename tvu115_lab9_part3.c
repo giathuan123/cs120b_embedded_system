@@ -12,11 +12,7 @@
 #ifdef _SIMULATE_
 #include "simAVRHeader.h"
 #endif
-enum state{ init, wait_press, wait_release} toggle_button = init;
-enum state up_button = wait_press,down_button = wait_press;
-enum scale{C4, D, E, F, G, A, B, C5} sound_scale = C4;
-double scaleChart[8] = {261.63, 293.66, 329.63, 349.23, 392, 440, 493.88, 523.25};
-unsigned char on = 0x00;
+#include <timer.h>
 
 void set_PWM(double freq){
   static double curr_freq;
@@ -42,51 +38,46 @@ void PWM_off(){
   TCCR3A = 0x00;
   TCCR3B = 0x00;
 }
+enum state{ init, wait_press, playing} toggle_button = init;
+enum scale{NO_SOUND, C4, D, E, F, G, A, B, C5};
+enum scale tones[] = {C4, E, F, NO_SOUND, F, NO_SOUND, F, B, G};
+unsigned short period = 100;
+unsigned char playTimes[] = {5, 8, 2, 4, 2, 4, 2, 4, 5};
+unsigned char elaspePlaytime = 0;
+unsigned char playIndex = 0;
+double scaleChart[9] = {0, 261.63, 293.66, 329.63, 349.23, 392, 440, 493.88, 523.25};
+unsigned char on = 0x00;
 
+void playTunes(){
+  if(playIndex < 9){
+    if(elaspePlaytime < playTimes[playIndex]){
+      elaspePlaytime++; 
+    }else{
+      playIndex++;
+      set_PWM(scaleChart[tones[playIndex]]);
+      elaspePlaytime = 0;
+    }
+  }
+}
 void tick(){
   unsigned char buttonA0 = ~PINA & 0x01; 
-  unsigned char buttonA1 = ~PINA & 0x02; 
-  unsigned char buttonA2 = ~PINA & 0x04; 
+  static char wait;
   switch(toggle_button){
     case(init):
-      sound_scale = C4;
+      playIndex = 0;
       toggle_button = wait_press;
       break;
     case(wait_press):
       if(buttonA0){
-        on = !on;
-        toggle_button = wait_release;
+        toggle_button = playing;
       }
       break;
-    case(wait_release):
-      if(!buttonA0){
+    case(playing):
+      if(playIndex < 9){
+        playTunes();
+      };
+      if(!buttonA0 && playIndex >= 9){
         toggle_button = init;
-      }
-      break;
-  }
-  switch(up_button){
-    case(wait_press):
-      if(buttonA1 && (sound_scale < C5)){
-          sound_scale++;
-          up_button = wait_release;
-      }
-      break;
-    case(wait_release):
-      if(!buttonA1){
-        up_button = wait_press;
-      }
-      break;
-  }
-  switch(down_button){
-    case(wait_press):
-      if(buttonA2 && (sound_scale > C4)){
-          sound_scale--;
-          down_button = wait_release;
-      }
-      break;
-    case(wait_release):
-      if(!buttonA2){
-        down_button = wait_press;
       }
       break;
   }
@@ -95,16 +86,15 @@ int main(void) {
     /* Insert DDR and PORT initializations */
     DDRB = 0x40;
     DDRA = 0xFF;
+    TimerSet(period);
+    TimerOn();
     PORTA = 0xFF;
     PWM_on();
     /* Insert your solution below */
     while (1) {
       tick();      
-      if(on){
-        set_PWM(scaleChart[sound_scale]);
-      }else{
-        set_PWM(0);
-      }
+      while(!TimerFlag){}
+      TimerFlag = 0;
     }
     return 1;
 }
