@@ -1,7 +1,7 @@
 /*	Author: thuanvu
  *  Partner(s) Name: 
  *	Lab Section:
- *	Assignment: Lab 10  Exercise 1
+ *	Assignment: Lab 10  Exercise 4
  *	Exercise Description: Concurrent synch SM
  *
  *	I acknowledge all content contained herein, excluding template or example
@@ -33,7 +33,7 @@ int ThreeLED_tickFnc(int prevState){
 }
 
 struct task_t ThreeLED_task = {
-  .period = 1000,
+  .period = 300,
   .elaspedTime = 0,
   .state = init,
   .TickFct = ThreeLED_tickFnc

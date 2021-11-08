@@ -1,7 +1,7 @@
 /*	Author: thuanvu
  *  Partner(s) Name: 
  *	Lab Section:
- *	Assignment: Lab 10  Exercise 2
+ *	Assignment: Lab 10  Exercise 4
  *	Exercise Description: Concurrent synch SM
  *
  *	I acknowledge all content contained herein, excluding template or example
@@ -12,39 +12,49 @@
 #include <avr/io.h>
 #include "timer.h"
 #include "tasks.h"
+
 #ifdef _SIMULATE_
 #include "simAVRHeader.h"
 #endif
 
 extern char lights;
 extern char blinking;
+extern char sound;
 
 extern struct task_t ThreeLED_task;
 extern struct task_t BlinkLED_task;
+extern struct task_t Speaker_task;
+extern struct task_t pollButton_task;
 
-unsigned long period;
+unsigned long systemPeriod = 1;
 
 void runTask(struct task_t* tasks){
-  if(tasks->elaspedTime == tasks->period){
+  if(tasks->elaspedTime >= tasks->period){
     tasks->state = tasks->TickFct(tasks->state);
     tasks->elaspedTime = 0;
-  }else{
-    tasks->elaspedTime += period;
   }
+  tasks->elaspedTime += systemPeriod;
+  
   return;
 }
 int main(void) {
-    DDRB = 0x00;
+    DDRB = 0x10;
+    DDRA = 0xFF;
+    PORTA = 0xFF;
     PORTB = 0x00;
-    /* Insert DDR and PORT initializations */
-    period = 100;
-    TimerSet(period);
+    TimerSet(systemPeriod);
     TimerOn();
-    /* Insert your solution below */
+    char on = 0x00;
     while (1) {
+      on = ~PINA & 0x04;
       runTask(&ThreeLED_task);
       runTask(&BlinkLED_task);
-      PORTB = blinking << 3 | lights;
+      runTask(&Speaker_task);
+      runTask(&pollButton_task);
+      if(!on)
+        PORTB = blinking << 3 | lights;
+      else
+        PORTB = (sound << 4) | (blinking << 3) | lights;
       while(!TimerFlag){}
       TimerFlag = 0;
     }

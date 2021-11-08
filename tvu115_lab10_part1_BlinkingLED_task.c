@@ -1,3 +1,14 @@
+/*	Author: thuanvu
+ *  Partner(s) Name: 
+ *	Lab Section:
+ *	Assignment: Lab 10  Exercise 1
+ *	Exercise Description: Concurrent synch SM
+ *
+ *	I acknowledge all content contained herein, excluding template or example
+ *	code, is my own original work.
+ *	Demo Link: https://drive.google.com/drive/folders/1vbyz9felmTvu6dzUBMSaL0-GajSoNqFA?usp=sharing
+ */
+
 #include "tasks.h"
 #include <avr/io.h>
 

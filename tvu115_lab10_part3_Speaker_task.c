@@ -1,7 +1,7 @@
 /*	Author: thuanvu
  *  Partner(s) Name: 
  *	Lab Section:
- *	Assignment: Lab 10  Exercise 1
+ *	Assignment: Lab 10  Exercise 3
  *	Exercise Description: Concurrent synch SM
  *
  *	I acknowledge all content contained herein, excluding template or example
@@ -12,31 +12,32 @@
 #include "tasks.h"
 #include <avr/io.h>
 
-char lights = 0x01;
+char sound = 0x00;
 
-enum ThreeLED_states {init, on} ThreeLED_state;
+enum Speaker_States {init, on, off} Speaker_state;
 
-int ThreeLED_tickFnc(int prevState){
+int Speaker_tickFnc(int prevState){
   switch(prevState){
     case(init):
+      prevState = off;
+      sound = 0x01;
+      break;
+    case(off):
+      sound = 0x00;
       prevState = on;
-      lights = 0x01;
       break;
     case(on):
-      lights = lights << 1;
-      if(lights == 0x08)
-        lights = 0x01;
+      sound = 0x01;
+      prevState = off;
       break;
   } 
   
   return prevState;
 }
 
-struct task_t ThreeLED_task = {
-  .period = 1000,
+struct task_t Speaker_task = {
+  .period = 2,
   .elaspedTime = 0,
   .state = init,
-  .TickFct = ThreeLED_tickFnc
+  .TickFct = Speaker_tickFnc
 };
-
-
