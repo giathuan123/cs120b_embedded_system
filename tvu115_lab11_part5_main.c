@@ -58,6 +58,7 @@ int Display_SM(int state){
       break;
     case display:
       if(gameStart){
+        LCD_ClearScreen();
         LCD_Cursor(topObstacle);
         LCD_WriteData('#');
         LCD_Cursor(15+bottomObstacle);
