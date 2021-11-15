@@ -65,8 +65,13 @@ int Display_SM(int state){
         LCD_WriteData('#');
         topObstacle = ((topObstacle > 0) ? topObstacle-1 : 16);
         bottomObstacle = (bottomObstacle > 0) ? bottomObstacle-1 : 16;
+        if(curPosition){
         LCD_Cursor(2);
         LCD_WriteData('P');
+        }else{
+        LCD_Cursor(18);
+        LCD_WriteData('P');
+        }
       }
       break;
   }
