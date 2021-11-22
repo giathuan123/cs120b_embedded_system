@@ -1,3 +1,12 @@
+/*	Author: thuanvu
+ *  Partner(s) Name: 
+ *	Lab Section:
+ *	Assignment: Game
+ *	Exercise Description: [optional - include for your own benefit]
+ *      Demo Link: https://drive.google.com/drive/folders/173Dt0iPtX2V9g_A5oSe08jxe19fHSaDX?usp=sharing
+ * I acknowledge all content contained herein, excluding template or example
+ *	code, is my own original work.
+ */
 #include <avr/io.h>
 #include "io.h"
 #include "timer.h"
