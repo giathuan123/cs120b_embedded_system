@@ -1,3 +1,12 @@
+/*	Author: thuanvu
+ *  Partner(s) Name: none
+ *	Lab Section:
+ *	Assignment: Game Project
+ *	Exercise Description: Count the number of 1s on ports A and B and output that number on portC 
+ *      Demo Link: https://drive.google.com/drive/folders/173Dt0iPtX2V9g_A5oSe08jxe19fHSaDX?usp=sharing
+ *	I acknowledge all content contained herein, excluding template or example
+ *	code, is my own original work.
+ */
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <stdio.h>
