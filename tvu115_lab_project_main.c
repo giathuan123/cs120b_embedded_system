@@ -1,33 +1,41 @@
-/*	Author: thuanvu
- *  Partner(s) Name: 
- *	Lab Section:
- *	Assignment: Game
- *	Exercise Description: [optional - include for your own benefit]
- *      Demo Link: https://drive.google.com/drive/folders/173Dt0iPtX2V9g_A5oSe08jxe19fHSaDX?usp=sharing
- * I acknowledge all content contained herein, excluding template or example
- *	code, is my own original work.
- */
 #include <avr/io.h>
-#include "tasks.h"
+#include "io.h"
 #include "timer.h"
-#include "define.h"
+#include "tasks.h"
 
-const char alpha[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', '#'};
-
-unsigned char GetBit(unsigned char word, unsigned char position){
-  return (word >> position) & 0x01; 
-}
-extern int displayTickFct(int state);
+extern int gameTickFct(int state);
 extern int soundTickFct(int state);
+extern int displayTickFct(int state);
+unsigned char GetBit(unsigned char port, unsigned char pos){
+  return (port >> pos) & 0x01;
+}
+unsigned short sysperiod = 50;
 
-unsigned long sysperiod = 10;
-unsigned char buffer[BUFFER_LEN] = "";
-unsigned char lastBuffer[BUFFER_LEN] = "";
+task_t tasks[] = {
+  {
+    .period = 100,
+    .elaspedTime = 100,
+    .state = 0,
+    .TickFct = gameTickFct,
+  },
+  {
+    .period = 50,
+    .elaspedTime = 50,
+    .state = 0,
+    .TickFct = displayTickFct,
+  },
+  {
+    .period = 50,
+    .elaspedTime = 50,
+    .state = 0,
+    .TickFct = soundTickFct,
+  }
+};
 
-void runTasks(task_t* tasks, int numberOfTasks){
+void runTasks(task_t *tasks, int size){
   int i;
-  for(i = 0; i < numberOfTasks; i++){
-    if(tasks[i].elaspedTime >= tasks[i].period){
+  for(i = 0; i < size; i++){
+    if(tasks[i].period <= tasks[i].elaspedTime){
       tasks[i].state = tasks[i].TickFct(tasks[i].state);
       tasks[i].elaspedTime = 0;
     }
@@ -35,39 +43,20 @@ void runTasks(task_t* tasks, int numberOfTasks){
   }
 }
 
-task_t tasks[] =
-{
-  {
-    .period = 50,
-    .state = 0,
-    .elaspedTime = 0,
-    .TickFct = displayTickFct,
-  },
-  {
-    .period = 50,
-    .state = 0,
-    .elaspedTime = 0,
-    .TickFct = soundTickFct,
-  }
-};
-
 int main(){
+  DDRA = 0xFF; PORTA = 0xFF;
   DDRB = 0xFF; PORTB = 0xFF;
   DDRC = 0xFF; PORTC = 0x00;
   DDRD = 0xFF; PORTD = 0x00;
   TimerSet(sysperiod);
   TimerOn();
+  LCD_init();
+  LCD_DisplayString(1, "choose difficulty: 1, 2, 3");
   while(1){
-    int i;
-    for(i = 0;i < 16; i++){
-      buffer[i] = ' ';
-    }
-    for(i = 0; i < NUMBUTTONS; i++){
-      if(GetBit(~PINB, NUMBUTTONS-1-i))
-        buffer[i]=alpha[i];
-    }
-    runTasks(&tasks, 2);
-    while(!TimerFlag){};
+    runTasks(&tasks, 3);
+    while(!TimerFlag){}
     TimerFlag = 0;
   }
+  
 }
+
